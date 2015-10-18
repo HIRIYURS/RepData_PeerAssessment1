@@ -28,7 +28,37 @@ Read the File using function. Am using read.csv() funtion
 
 ```r
 require(data.table)
+```
+
+```
+## Loading required package: data.table
+## data.table 1.9.4  For help type: ?data.table
+## *** NB: by=.EACHI is now explicit. See README to restore previous behaviour.
+```
+
+```r
 require(dplyr)
+```
+
+```
+## Loading required package: dplyr
+## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:data.table':
+## 
+##     between, last
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 ## Read the File using read.csv() function
 stpdata <- read.csv("activity.csv", stringsAsFactors = FALSE)
 ```
@@ -69,13 +99,18 @@ Here is the code snippet for the same,
 
     # Sum up the steps for each day    
     smry_data <- summarise(dt_stpdata, steps = sum(steps))
-    
+```
+
+
+```r
     # Plot the histogram
-    hist(smry_data$steps, main = "Total steps Each day", xlab = "Steps", 
+    hist(smry_data$steps, breaks = 20, main = "Total steps Each day", 
+         xlab = "Total Steps", 
          ylab = "Number of days", col = "blue")
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+
 
 ```r
     # Find the median and mean values
@@ -88,7 +123,7 @@ Here is the code snippet for the same,
 ```
 
 ```
-## [1] "The Mean and Median values for the total number of steps taken per day: 570600 and 570600"
+## [1] "The Mean and Median values for the total number of steps taken per day: 10770 and 10760"
 ```
 
 # What is the average daily activity pattern?
@@ -101,15 +136,18 @@ Here is the code snippet for the same,
 ```r
     int5_stpdata <- group_by(tblstpdata, interval, add = TRUE)
     int5_avg <- summarise(int5_stpdata, steps = mean(steps))
+```
+
+
+```r
     plot(int5_avg$interval, int5_avg$steps, type = "l", xlab = "5-min interval", 
             ylab = "Average across all Days", 
             main = "Average number of steps taken/5-min interval", 
             col = "green")
 ```
 
-```
-## Error in xy.coords(x, y, xlabel, ylabel, log): 'x' and 'y' lengths differ
-```
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+
 
 ```r
     ## Which 5-minute interval, on average across all the days in the dataset,
@@ -126,7 +164,7 @@ Here is the code snippet for the same,
 ```
 
 ```
-## Error in int5_avg[int5_avg$steps == max(int5_avg$steps), ]$interval: $ operator is invalid for atomic vectors
+## [1] 835
 ```
 
 
@@ -160,10 +198,6 @@ Total number of rows with missing values is 2304.
     stpdata[is.na(stpdata)] <- int5_avg[int5_avg$interval == stpdata$interval]$steps
 ```
 
-```
-## Error in `[<-.data.frame`(`*tmp*`, is.na(stpdata), value = NULL): replacement has length zero
-```
-
 
 Make a histogram of the total number of steps taken each day 
 
@@ -176,15 +210,16 @@ Make a histogram of the total number of steps taken each day
     
     # Sum up the steps
     nwsmry_data <- summarise(dt_nwstp, steps = sum(steps))
-    
-    
-    hist(nwsmry_data$steps, main = "Total steps each day", xlab = "Steps",
+```
+
+
+```r
+    hist(nwsmry_data$steps, breaks = 20, main = "Total steps each day", 
+         xlab = "Steps",
          ylab = "Number of days", col = "green")
 ```
 
-```
-## Error in hist.default(nwsmry_data$steps, main = "Total steps each day", : invalid number of 'breaks'
-```
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
 
 Calculate and report the mean and median total number of steps taken per day.
 
@@ -194,23 +229,16 @@ Calculate and report the mean and median total number of steps taken per day.
     nwmn <- temp[4]
 
     prntmnA <- sprintf("After imputing the missing values, The Mean and Median values are: %d and %d", nwmn, nwmdn)
-```
-
-```
-## Error in sprintf("After imputing the missing values, The Mean and Median values are: %d and %d", : invalid format '%d'; use format %f, %e, %g or %a for numeric objects
-```
-
-```r
     prntmnB <- sprintf("Before imputing the missing values, The Mean and Median values are: %d and %d", mn, mdn)
 ```
 
 
 ```
-## Error in print(prntmnA): object 'prntmnA' not found
+## [1] "After imputing the missing values, The Mean and Median values are: 10770 and 10770"
 ```
 
 ```
-## [1] "Before imputing the missing values, The Mean and Median values are: 570600 and 570600"
+## [1] "Before imputing the missing values, The Mean and Median values are: 10770 and 10760"
 ```
 
 # Are there differences in activity patterns between weekdays and weekends?
@@ -224,7 +252,33 @@ Here is the code snippet for the above,
 
 ```r
     require(ggplot2)
+```
+
+```
+## Loading required package: ggplot2
+```
+
+```r
     require(plyr)
+```
+
+```
+## Loading required package: plyr
+## -------------------------------------------------------------------------
+## You have loaded plyr after dplyr - this is likely to cause problems.
+## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+## library(plyr); library(dplyr)
+## -------------------------------------------------------------------------
+## 
+## Attaching package: 'plyr'
+## 
+## The following objects are masked from 'package:dplyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
+```
+
+```r
     # Create a new factor variable in the dataset identifying weekend and weekday
     stpdata$dayofweek <- weekdays(stpdata$date, abbreviate = FALSE)
     stpdata$dayofweek <- ifelse(stpdata$dayofweek %in% c("Saturday", "Sunday"), 
@@ -233,7 +287,10 @@ Here is the code snippet for the above,
     # Compute avewrage for weekend and weekdays
     wkdy_avg <- ddply(stpdata, .(interval, dayofweek), summarise, 
                       steps = mean(steps))
-    
+```
+
+
+```r
     # Plot the panel plot for weekday and weekends average steps taken
     myplot <- ggplot(wkdy_avg, aes(x = interval, y = steps)) +
             geom_line(color = "aquamarine4") +
@@ -245,9 +302,7 @@ Here is the code snippet for the above,
     print(myplot)
 ```
 
-```
-## Error in seq.default(from = best$lmin, to = best$lmax, by = best$lstep): 'from' must be of length 1
-```
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png) 
 
 # End of the Report! Hope it was useful and easy to understand!!
 
